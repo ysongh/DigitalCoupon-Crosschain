@@ -9,7 +9,7 @@ const { deployUpgradable } = require('@axelar-network/axelar-gmp-sdk-solidity');
 
 // load contracts
 const ExampleProxy = require('../artifacts/contracts/Proxy.sol/ExampleProxy.json');
-const NFTLinker = require('../artifacts/contracts/NFTLinker.sol/NFTLinker.json');
+const DigitalCoupon = require('../artifacts/contracts/DigitalCoupon.sol/DigitalCoupon.json');
 const ERC721 = require('../artifacts/contracts/ERC721demo.sol/ERC721Demo.json');
 
 let chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
@@ -44,14 +44,14 @@ async function deployNFTContracts(chain: any) {
     const nftLinker = await deployUpgradable(
         chain.constAddressDeployer,
         walletConnectedToProvider,
-        NFTLinker,
+        DigitalCoupon,
         ExampleProxy,
         [chain.gateway, chain.gasReceiver],
         [],
         utils.defaultAbiCoder.encode(['string'], [chain.name]),
-        'nftLinker',
+        'digitalCoupon',
     );
-    console.log(`NFTLinker deployed on ${chain.name}: ${nftLinker.address}`);
+    console.log(`DigitalCoupon deployed on ${chain.name}: ${nftLinker.address}`);
     chain.nftLinker = nftLinker.address;
 
 }

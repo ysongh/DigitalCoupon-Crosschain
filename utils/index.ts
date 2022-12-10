@@ -2,7 +2,7 @@ import { Contract, getDefaultProvider } from 'ethers';
 import { AxelarQueryAPI, Environment, EvmChain, GasToken } from '@axelar-network/axelarjs-sdk';
 
 import ERC721 from '../artifacts/contracts/ERC721demo.sol/ERC721Demo.json';
-import NftLinker from '../artifacts/contracts/NFTLinker.sol/NFTLinker.json';
+import DigitalCoupon from '../artifacts/contracts/DigitalCoupon.sol/DigitalCoupon.json';
 import { isTestnet, wallet } from '../config/constants';
 import { defaultAbiCoder, keccak256 } from 'ethers/lib/utils';
 import { sleep } from './sleep';
@@ -16,7 +16,7 @@ const avalancheChain = chains.find((chain: any) => chain.name === 'Avalanche') a
 
 export function updateContractsOnChainConfig(chain: any): void {
     chain.wallet = wallet.connect(getDefaultProvider(chain.rpc));
-    chain.contract = new Contract(chain.nftLinker as string, NftLinker.abi, chain.wallet);
+    chain.contract = new Contract(chain.nftLinker as string, DigitalCoupon.abi, chain.wallet);
     chain.erc721 = new Contract(chain.erc721 as string, ERC721.abi, chain.wallet);
 }
 
