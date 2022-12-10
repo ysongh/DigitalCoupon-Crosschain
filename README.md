@@ -1,4 +1,4 @@
-# General Message Passing Tutorial
+# Digital Coupon (Crosschain)
 
 ## Instructions
 
