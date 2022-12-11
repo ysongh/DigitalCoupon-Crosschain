@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import Web3Modal from 'web3modal';
 
 import DigitalCoupon from '../artifacts/contracts/DigitalCoupon.sol/DigitalCoupon.json';
+import { isTestnet } from '../config/constants';
 import { formatAddress } from '../utils/formatAddress';
 
 function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCContract, setTokenName }) {
@@ -13,13 +14,15 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
   const [chainName, setChainName] = useState('');
 
   const connectMetamask = async () => {
+    let chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
+
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
 
     const provider = new ethers.providers.Web3Provider(connection);  
-    console.log(provider);
 
     const signer = provider.getSigner();
+    console.log(signer);
     setUserSigner(signer);
 
     const { chainId } = await provider.getNetwork();
@@ -38,7 +41,9 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
       setTokenName("MATIC");
     }
     else if(chainId === 1287){
-      const contract = new ethers.Contract(process.env.NEXT_PUBLIC_MOONBASE_CONTRACTADDRESS, DigitalCoupon.abi, signer);
+      const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
+      const contract = new ethers.Contract(moonbeamChain.nftLinker, DigitalCoupon.abi, signer);
+      console.log(contract)
       setDCContract(contract);
       setChainName("Moonbase");
       setTokenName("DEV");
