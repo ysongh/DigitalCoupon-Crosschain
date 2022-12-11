@@ -48,6 +48,22 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
       setChainName("Moonbase");
       setTokenName("DEV");
     }
+    else if(chainId === 2501){
+      const avalancheChain = chains.find((chain) => chain.name === 'Avalanche');
+      const contract = new ethers.Contract(avalancheChain.digitalCoupon, DigitalCoupon.abi, signer);
+      console.log(contract)
+      setDCContract(contract);
+      setChainName("Local Avalanche");
+      setTokenName("AVAX");
+    }
+    else if(chainId === 2500){
+      const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
+      const contract = new ethers.Contract(moonbeamChain.digitalCoupon, DigitalCoupon.abi, signer);
+      console.log(contract)
+      setDCContract(contract);
+      setChainName("Local Moonbase");
+      setTokenName("DEV");
+    }
   }
 
   return (

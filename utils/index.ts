@@ -126,7 +126,7 @@ async function print() {
     }
 }
 
-const getGasFee = async (
+export const getGasFee = async (
     sourceChainName: EvmChain,
     destinationChainName: EvmChain,
     sourceChainTokenSymbol: GasToken | string,

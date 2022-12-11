@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
+import { AxelarQueryAPI, Environment, EvmChain, GasToken } from '@axelar-network/axelarjs-sdk';
 import { useRouter } from 'next/router';
 import { Container, SimpleGrid, ButtonGroup, Button, Text, InputGroup, InputRightElement, Input, Tooltip, useToast } from '@chakra-ui/react';
 import { Web3Storage } from 'web3.storage';
 import { ethers, utils } from 'ethers';
 
 import CouponDetailCard from '../../../components/CouponDetailCard';
+import { isTestnet } from '../../../config/constants';
+import { getGasFee } from '../../../utils';
 
 const client = new Web3Storage({ token: process.env.NEXT_PUBLIC_WEB3STORAGE_APIKEY });
 
@@ -87,6 +89,24 @@ export default function CouponDetail({ tokenName, ethAddress, userSigner, dcCont
       const tx = await transaction.wait();
       console.log(tx);
       setReferCount("1");
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+
+  const portcoupon = async () => {
+    try {
+      let chains = isTestnet ? require('../../../config/testnet.json') : require('../../../config/local.json');
+      const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
+      const gasFee = getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
+      console.log(moonbeamChain);
+
+      const transaction = await dcContract.createCouponToOtherChain(id, moonbeamChain.name, {
+        value: gasFee,
+      });
+      const tx = await transaction.wait();
+      console.log(tx);
     } catch (error) {
       console.error(error);
     }
@@ -201,6 +221,9 @@ export default function CouponDetail({ tokenName, ethAddress, userSigner, dcCont
                 </Tooltip>
               </InputRightElement>
             </InputGroup>
+            <Button colorScheme='orange' mt='2' onClick={portcoupon}>
+              Port to Other Chain
+            </Button>
           </div>
           : <div>
             <Text fontSize='lg' mb='2'>Create Referrer Link to Share</Text>

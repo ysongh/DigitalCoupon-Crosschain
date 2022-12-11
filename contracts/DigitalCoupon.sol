@@ -157,6 +157,46 @@ contract DigitalCoupon is
         chainName = chainName_;
     }
 
+    function createCouponToOtherChain(
+        uint256 couponId,
+        string memory destinationChain
+    ) external payable {
+        Coupon memory currentCoupon = couponList[couponId];
+        string memory cid = currentCoupon.cid;
+        uint expireDate = currentCoupon.expireDate;
+        uint price = currentCoupon.price;
+        uint rewardPercentAmount = currentCoupon.rewardPercentAmount;
+        address owner = msg.sender;
+
+        //Create the payload.
+        bytes memory payload = abi.encode(
+            cid, 
+            expireDate,
+            price,
+            rewardPercentAmount,
+            owner
+        );
+        
+        string memory stringAddress = address(this)
+            .toString();
+        //Pay for gas. We could also send the contract call here but then the sourceAddress will be that of the gas receiver which is a problem later.
+        gasReceiver.payNativeGasForContractCall{
+            value: msg.value
+        }(
+            address(this),
+            destinationChain,
+            stringAddress,
+            payload,
+            msg.sender
+        );
+        //Call the remote contract.
+        gateway.callContract(
+            destinationChain,
+            stringAddress,
+            payload
+        );
+    }
+
     //The main function users will interact with.
     function sendNFT(
         address operator,
@@ -278,49 +318,20 @@ contract DigitalCoupon is
         string calldata sourceAddress,
         bytes calldata payload
     ) internal override {
-        //Check that the sender is another token linker.
-        require(
-            sourceAddress.toAddress() == address(this),
-            "NOT_A_LINKER"
-        );
         //Decode the payload.
         (
-            string memory originalChain,
-            address operator,
-            uint256 tokenId,
-            address destinationAddress,
-            string memory tokenURI
+            string memory cid,
+            uint expireDate,
+            uint price,
+            uint rewardPercentAmount,
+            address owner
         ) = abi.decode(
                 payload,
-                (string, address, uint256, address, string)
+                (string, uint, uint, uint, address)
             );
-        //If this is the original chain then we give the NFT locally.
-        if (
-            keccak256(bytes(originalChain)) ==
-            keccak256(bytes(chainName))
-        ) {
-            IERC721(operator).transferFrom(
-                address(this),
-                destinationAddress,
-                tokenId
-            );
-            //Otherwise we need to mint a new one.
-        } else {
-            //We need to save all the relevant information.
-            bytes memory originalData = abi.encode(
-                originalChain,
-                operator,
-                tokenId,
-                tokenURI
-            );
-            //Avoids tokenId collisions.
-            uint256 newTokenId = uint256(
-                keccak256(originalData)
-            );
-            original[newTokenId] = originalData;
-            _safeMint(destinationAddress, newTokenId);
-            _setTokenURI(newTokenId, tokenURI);
-        }
+        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price, rewardPercentAmount, owner);
+        emit CouponCreated(totalCoupon, cid, expireDate, price, rewardPercentAmount, owner);
+        totalCoupon++;
     }
 
     function contractId() external pure returns (bytes32) {

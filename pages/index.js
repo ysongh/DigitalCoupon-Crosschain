@@ -11,7 +11,7 @@ export default function Home({ tokenName, dcContract }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchAllNFTs();
+    //fetchAllNFTs();
   }, [])
 
   useEffect(() => {
