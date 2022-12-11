@@ -158,14 +158,18 @@ contract DigitalCoupon is
     }
 
     function createCouponToOtherChain(
-        uint256 couponId,
+        string memory cid,
+        uint timeAmount,
+        uint price,
+        uint rewardPercentAmount,
         string memory destinationChain
     ) external payable {
-        Coupon memory currentCoupon = couponList[couponId];
-        string memory cid = currentCoupon.cid;
-        uint expireDate = currentCoupon.expireDate;
-        uint price = currentCoupon.price;
-        uint rewardPercentAmount = currentCoupon.rewardPercentAmount;
+        uint expireDate = block.timestamp + timeAmount * 1 days;
+
+        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price, rewardPercentAmount, msg.sender);
+        emit CouponCreated(totalCoupon, cid, expireDate, price, rewardPercentAmount, msg.sender);
+        totalCoupon++;
+
         address owner = msg.sender;
 
         //Create the payload.

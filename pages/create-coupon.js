@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { EvmChain, GasToken } from '@axelar-network/axelarjs-sdk';
 import { useRouter } from 'next/router';
 import { Web3Storage } from 'web3.storage';
-import { FormControl, FormLabel, Box, ButtonGroup, Spinner, Input, Textarea, Heading, Button } from '@chakra-ui/react';
+import { FormControl, FormLabel, Box, Spinner, Input, Textarea, Heading, Button } from '@chakra-ui/react';
+
+import { isTestnet } from '../config/constants';
+import { getGasFee } from '../utils';
 
 const client = new Web3Storage({ token: process.env.NEXT_PUBLIC_WEB3STORAGE_APIKEY });
 
@@ -57,6 +61,47 @@ function CreateCoupon({ tokenName, dcContract }) {
     }  
   }
 
+  const createCouponToOtherChain = async () => {
+    try {
+      setLoading(true);
+
+      let chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
+      //const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
+      //const gasFee = await getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
+
+      const avalancheChain = chains.find((chain) => chain.name === 'Avalanche');
+      const gasFee = await getGasFee(EvmChain.MOONBEAM, EvmChain.AVALANCHE, GasToken.GLMR);
+      console.log(avalancheChain, dcContract, gasFee);
+
+      console.log(title, description, photo, price, discount);
+      const couponData = JSON.stringify({ title, description, photoName: photo.name, price, discount });
+      const blob = new Blob([couponData], {type: 'text/plain'});
+      const couponDataFile = new File([ blob ], 'couponData.json');
+
+      const cid = await client.put([couponDataFile, photo], {
+        onRootCidReady: localCid => {
+          console.log(`> 🔑 locally calculated Content ID: ${localCid} `)
+          console.log('> 📡 sending files to web3.storage ')
+        },
+        onStoredChunk: bytes => console.log(`> 🛰 sent ${bytes.toLocaleString()} bytes to web3.storage`)
+      })
+
+      console.log(`https://dweb.link/ipfs/${cid}`);
+      setCid(`https://dweb.link/ipfs/${cid}`);
+
+      const priceToETH = +price * 10 ** 18;
+      const transaction = await dcContract.createCouponToOtherChain(`https://dweb.link/ipfs/${cid}`, days, priceToETH.toString(), discount, avalancheChain.name, {
+        value: gasFee,
+      });
+      const tx = await transaction.wait();
+      console.log(tx);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }
+
   return (
     <div>
       <center>
@@ -89,12 +134,17 @@ function CreateCoupon({ tokenName, dcContract }) {
 
           {loading
             ? <Spinner color='orange' mt='4' />
-            : <ButtonGroup spacing='6' mt='4'>
-                <Button colorScheme='orange' onClick={handleSubmit}>
-                  Create
+            : 
+              <>
+                <Button colorScheme='orange' onClick={handleSubmit} mb="2">
+                  Create for only this chain
                 </Button>
+                <Button colorScheme='orange' onClick={createCouponToOtherChain} mb="2">
+                  Create for both Moonbeam and Avalanche
+                </Button>
+                <br />
                 <Button onClick={() => router.push('/')}>Cancel</Button>
-              </ButtonGroup>
+              </>
           }
           <br />
           <br />
