@@ -30,6 +30,7 @@ async function deployNFTContracts(chain: any) {
     const erc721 = await deployContract(walletConnectedToProvider, ERC721, ['ATestCar', 'CAR']);
     chain.erc721 = erc721.address;
     console.log(`ERC721Demo deployed on ${chain.name} ${erc721.address}.`);
+    
 
     if (chain.name === "Avalanche") {
         const hash = "QmPGrjwCuHKLvbvcSXHLWSgsjfUVx2faV2xsN4b9VB9ogL";
@@ -41,7 +42,7 @@ async function deployNFTContracts(chain: any) {
         console.log(`Minted token ${nftTokenId} for ${chain.name}`);
     }
 
-    const nftLinker = await deployUpgradable(
+    const digitalCoupon = await deployUpgradable(
         chain.constAddressDeployer,
         walletConnectedToProvider,
         DigitalCoupon,
@@ -51,8 +52,17 @@ async function deployNFTContracts(chain: any) {
         utils.defaultAbiCoder.encode(['string'], [chain.name]),
         'digitalCoupon',
     );
-    console.log(`DigitalCoupon deployed on ${chain.name}: ${nftLinker.address}`);
-    chain.nftLinker = nftLinker.address;
+
+   
+    console.log(`DigitalCoupon deployed on ${chain.name}: ${digitalCoupon.address}`);
+    chain.digitalCoupon = digitalCoupon.address;
+
+    if (chain.name === "Avalanche") {
+        await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeihcfd2bojowzxy6frpl54xqyt6cpk2wlp52avpetgj7yrcgx3m7ky", "7", "1000000000000000000", "10");
+        console.log(`Coupon #1 is created on Avalanche`);
+        await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeigqj4in4bpiovytwo6ubsjc2myek6psciscszyozch3jlzs2hv3ra", "10", "1500000000000000000", "10");
+        console.log(`Coupon #2 is created on Avalanche`);
+    }
 
 }
 

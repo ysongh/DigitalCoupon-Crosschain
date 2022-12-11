@@ -16,7 +16,7 @@ const avalancheChain = chains.find((chain: any) => chain.name === 'Avalanche') a
 
 export function updateContractsOnChainConfig(chain: any): void {
     chain.wallet = wallet.connect(getDefaultProvider(chain.rpc));
-    chain.contract = new Contract(chain.nftLinker as string, DigitalCoupon.abi, chain.wallet);
+    chain.contract = new Contract(chain.digitalCoupon as string, DigitalCoupon.abi, chain.wallet);
     chain.erc721 = new Contract(chain.erc721 as string, ERC721.abi, chain.wallet);
 }
 
@@ -113,6 +113,11 @@ export const ownerOf = async (chain = avalancheChain) => {
     }
     return { chain: '' };
 };
+
+export const getAvalancheCoupons = async () => {
+    const _counpons = await avalancheChain.contract.getCoupons();
+    console.log(_counpons);
+}
 
 async function print() {
     for (const chain of chains) {

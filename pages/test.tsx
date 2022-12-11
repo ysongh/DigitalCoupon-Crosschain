@@ -1,8 +1,9 @@
 import cn from 'classnames';
+import { Button } from '@chakra-ui/react';
 import type { NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { isTestnet } from '../config/constants';
-import { sendNftToDest, sendNftBack, ownerOf, truncatedAddress } from '../utils';
+import { sendNftToDest, sendNftBack, ownerOf, truncatedAddress, getAvalancheCoupons } from '../utils';
 
 const chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
 
@@ -61,6 +62,10 @@ const Home: NextPage = () => {
             <h1 className="m-5 text-4xl font-medium text-center">General Message Passing (GMP)</h1>
             <h2 className="m-5 text-2xl font-medium text-center">Send NFTs Between Chains</h2>
 
+            <Button colorScheme='orange' onClick={() => getAvalancheCoupons()}>
+                Get Coupons
+            </Button>
+
             <div className="grid grid-cols-2 gap-20 mt-10 justify-items-center">
                 {/* source chain card */}
                 {generateCard(
@@ -102,16 +107,9 @@ const generateCard = (txhash: string, chain: any, onSubmit: any, buttonTitle: st
                     <form className="flex flex-col w-full" onSubmit={onSubmit}>
                         <div>
                             <div className="w-full input-group">
-                                <button
-                                    className={cn('btn btn-primary', {
-                                        loading,
-                                        'opacity-30': loading || owner.chain !== chain.name,
-                                        'opacity-100': !loading && owner.chain === chain.name,
-                                    })}
-                                    type="submit"
-                                >
-                                    {buttonTitle}
-                                </button>
+                            <Button colorScheme='orange' disabled={loading || owner.chain !== chain.name} type="submit">
+                                {buttonTitle}
+                            </Button>
                             </div>
                         </div>
                         <br />

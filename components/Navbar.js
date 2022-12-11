@@ -42,7 +42,7 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
     }
     else if(chainId === 1287){
       const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
-      const contract = new ethers.Contract(moonbeamChain.nftLinker, DigitalCoupon.abi, signer);
+      const contract = new ethers.Contract(moonbeamChain.digitalCoupon, DigitalCoupon.abi, signer);
       console.log(contract)
       setDCContract(contract);
       setChainName("Moonbase");
