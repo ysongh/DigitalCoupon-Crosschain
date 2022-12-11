@@ -26,22 +26,6 @@ async function deployNFTContracts(chain: any) {
     const provider = getDefaultProvider(chain.rpc);
     const walletConnectedToProvider = wallet.connect(provider);
 
-    // deploy/mint an NFT to selected chain
-    const erc721 = await deployContract(walletConnectedToProvider, ERC721, ['ATestCar', 'CAR']);
-    chain.erc721 = erc721.address;
-    console.log(`ERC721Demo deployed on ${chain.name} ${erc721.address}.`);
-    
-
-    if (chain.name === "Avalanche") {
-        const hash = "QmPGrjwCuHKLvbvcSXHLWSgsjfUVx2faV2xsN4b9VB9ogL";
-        const metadata = `https://ipfs.io/ipfs/${hash}`;
-        await (await erc721.mintWithMetadata(nftTokenId, hash, metadata)).wait(1);
-        console.log(`Minted token ${nftTokenId} for ${chain.name} with metadata ${metadata}`);
-    } else {
-        await (await erc721.mint(nftTokenId)).wait(1);
-        console.log(`Minted token ${nftTokenId} for ${chain.name}`);
-    }
-
     const digitalCoupon = await deployUpgradable(
         chain.constAddressDeployer,
         walletConnectedToProvider,

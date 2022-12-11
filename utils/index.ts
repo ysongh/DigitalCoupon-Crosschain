@@ -20,8 +20,8 @@ export function updateContractsOnChainConfig(chain: any): void {
     chain.erc721 = new Contract(chain.erc721 as string, ERC721.abi, chain.wallet);
 }
 
-updateContractsOnChainConfig(moonbeamChain);
-updateContractsOnChainConfig(avalancheChain);
+// updateContractsOnChainConfig(moonbeamChain);
+// updateContractsOnChainConfig(avalancheChain);
 
 export async function sendNftToDest(onSrcConfirmed: (txHash: string) => void, onSent: (ownerInfo: any) => void) {
     const owner = await ownerOf();

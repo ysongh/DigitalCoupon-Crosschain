@@ -99,8 +99,8 @@ export default function CouponDetail({ tokenName, ethAddress, userSigner, dcCont
     try {
       let chains = isTestnet ? require('../../../config/testnet.json') : require('../../../config/local.json');
       const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
-      const gasFee = getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
-      console.log(moonbeamChain);
+      const gasFee = await getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
+      console.log(moonbeamChain, dcContract, gasFee);
 
       const transaction = await dcContract.createCouponToOtherChain(id, moonbeamChain.name, {
         value: gasFee,
