@@ -66,14 +66,19 @@ function CreateCoupon({ tokenName, dcContract }) {
       setLoading(true);
 
       let chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
-      //const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
-      //const gasFee = await getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
+      let currentchain;
+      let gasFee;
 
-      const avalancheChain = chains.find((chain) => chain.name === 'Avalanche');
-      const gasFee = await getGasFee(EvmChain.MOONBEAM, EvmChain.AVALANCHE, GasToken.GLMR);
-      console.log(avalancheChain, dcContract, gasFee);
+      if (tokenName === 'AVAX') {
+        currentchain = chains.find((chain) => chain.name === 'Moonbeam');
+        gasFee = await getGasFee(EvmChain.AVALANCHE, EvmChain.MOONBEAM, GasToken.AVAX);
+      }
+      else {
+        currentchain = chains.find((chain) => chain.name === 'Avalanche');
+        gasFee = await getGasFee(EvmChain.MOONBEAM, EvmChain.AVALANCHE, GasToken.GLMR);
+      }
 
-      console.log(title, description, photo, price, discount);
+      console.log(currentchain);
       const couponData = JSON.stringify({ title, description, photoName: photo.name, price, discount });
       const blob = new Blob([couponData], {type: 'text/plain'});
       const couponDataFile = new File([ blob ], 'couponData.json');
@@ -90,7 +95,7 @@ function CreateCoupon({ tokenName, dcContract }) {
       setCid(`https://dweb.link/ipfs/${cid}`);
 
       const priceToETH = +price * 10 ** 18;
-      const transaction = await dcContract.createCouponToOtherChain(`https://dweb.link/ipfs/${cid}`, days, priceToETH.toString(), discount, avalancheChain.name, {
+      const transaction = await dcContract.createCouponToOtherChain(`https://dweb.link/ipfs/${cid}`, days, priceToETH.toString(), discount, currentchain.name, {
         value: gasFee,
       });
       const tx = await transaction.wait();
