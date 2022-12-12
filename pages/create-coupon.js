@@ -102,10 +102,20 @@ function CreateCoupon({ tokenName, dcContract }) {
       console.log(`https://dweb.link/ipfs/${cid}`);
       setCid(`https://dweb.link/ipfs/${cid}`);
 
-      const priceToETH = +price * 10 ** 18;
-      const transaction = await dcContract.createCouponToOtherChain(`https://dweb.link/ipfs/${cid}`, days, priceToETH.toString(), discount, currentchain.name, {
-        value: gasFee,
-      });
+      const priceToETH1 = +price * 10 ** 18;
+      const priceToETH2 = +price2 * 10 ** 18;
+      const transaction = await dcContract.createCouponToOtherChain(
+        `https://dweb.link/ipfs/${cid}`,
+        days,
+        priceToETH1.toString(),
+        priceToETH2.toString(),
+        discount,
+        discount2,
+        currentchain.name,
+        {
+          value: gasFee,
+        }
+      );
       const tx = await transaction.wait();
       console.log(tx);
       setLoading(false);
@@ -150,7 +160,7 @@ function CreateCoupon({ tokenName, dcContract }) {
           {showMoreChain
             ? <SimpleGrid columns={2} spacing={3}>
                 <FormControl mb='3'>
-                  <FormLabel htmlFor='price2'>Price (In {tokenName})</FormLabel>
+                  <FormLabel htmlFor='price2'>Price (In {tokenName === 'AVAX' ? 'Moonbeam' : 'Avalanche'})</FormLabel>
                   <Input id='price2' onChange={(e) => setPrice2(e.target.value)}/>
                 </FormControl>
                 <FormControl mb='5'>

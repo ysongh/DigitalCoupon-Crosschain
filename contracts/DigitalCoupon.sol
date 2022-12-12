@@ -160,14 +160,16 @@ contract DigitalCoupon is
     function createCouponToOtherChain(
         string memory cid,
         uint timeAmount,
-        uint price,
-        uint rewardPercentAmount,
+        uint price1,
+        uint price2,
+        uint rewardPercentAmount1,
+        uint rewardPercentAmount2,
         string memory destinationChain
     ) external payable {
         uint expireDate = block.timestamp + timeAmount * 1 days;
 
-        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price, rewardPercentAmount, msg.sender);
-        emit CouponCreated(totalCoupon, cid, expireDate, price, rewardPercentAmount, msg.sender);
+        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price1, rewardPercentAmount1, msg.sender);
+        emit CouponCreated(totalCoupon, cid, expireDate, price1, rewardPercentAmount1, msg.sender);
         totalCoupon++;
 
         address owner = msg.sender;
@@ -176,8 +178,8 @@ contract DigitalCoupon is
         bytes memory payload = abi.encode(
             cid, 
             expireDate,
-            price,
-            rewardPercentAmount,
+            price2,
+            rewardPercentAmount2,
             owner
         );
         
@@ -211,15 +213,15 @@ contract DigitalCoupon is
         (
             string memory cid,
             uint expireDate,
-            uint price,
-            uint rewardPercentAmount,
+            uint price2,
+            uint rewardPercentAmount2,
             address owner
         ) = abi.decode(
                 payload,
                 (string, uint, uint, uint, address)
             );
-        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price, rewardPercentAmount, owner);
-        emit CouponCreated(totalCoupon, cid, expireDate, price, rewardPercentAmount, owner);
+        couponList[totalCoupon] = Coupon(totalCoupon, cid, "", expireDate, price2, rewardPercentAmount2, owner);
+        emit CouponCreated(totalCoupon, cid, expireDate, price2, rewardPercentAmount2, owner);
         totalCoupon++;
     }
 
