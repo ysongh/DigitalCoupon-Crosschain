@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { EvmChain, GasToken } from '@axelar-network/axelarjs-sdk';
 import { useRouter } from 'next/router';
 import { Web3Storage } from 'web3.storage';
-import { FormControl, FormLabel, Box, Spinner, Input, Textarea, Heading, Button } from '@chakra-ui/react';
+import { FormControl, FormLabel, Box, ButtonGroup, SimpleGrid, Spinner, Input, Textarea, Heading, Button } from '@chakra-ui/react';
 
 import { isTestnet } from '../config/constants';
 import { getGasFee } from '../utils';
@@ -17,7 +17,10 @@ function CreateCoupon({ tokenName, dcContract }) {
   const [photo, setPhoto] = useState(null);
   const [price, setPrice] = useState('');
   const [discount, setDiscount] = useState(null);
+  const [price2, setPrice2] = useState('');
+  const [discount2, setDiscount2] = useState(null);
   const [days, setDays] = useState('');
+  const [showMoreChain, setShowMoreChain] = useState(false);
   const [loading, setLoading] = useState(false);
   const [cid, setCid] = useState(null);
   const [transactionHash, setTransactionHash] = useState('');
@@ -28,7 +31,12 @@ function CreateCoupon({ tokenName, dcContract }) {
     setPhoto(image);
   }
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
+    if(showMoreChain) createCouponToOtherChain();
+    else createCoupon();
+  }
+
+  const createCoupon = async () => {
     try{
       setLoading(true);
 
@@ -128,27 +136,43 @@ function CreateCoupon({ tokenName, dcContract }) {
             <FormLabel htmlFor='Expire Date'>Number of Days for expire</FormLabel>
             <Input id='Expire Date' onChange={(e) => setDays(e.target.value)}/>
           </FormControl>
-          <FormControl mb='3'>
-            <FormLabel htmlFor='price'>Price (In {tokenName})</FormLabel>
-            <Input id='price' onChange={(e) => setPrice(e.target.value)}/>
-          </FormControl>
-          <FormControl mb='5'>
-            <FormLabel htmlFor='discount'>Reward for Referrer (In %)</FormLabel>
-            <Input id='discount' onChange={(e) => setDiscount(e.target.value)}/>
-          </FormControl>
+          <SimpleGrid columns={2} spacing={3}>
+            <FormControl mb='3'>
+              <FormLabel htmlFor='price'>Price (In {tokenName})</FormLabel>
+              <Input id='price' onChange={(e) => setPrice(e.target.value)}/>
+            </FormControl>
+            <FormControl mb='5'>
+              <FormLabel htmlFor='discount'>Reward for Referrer (In %)</FormLabel>
+              <Input id='discount' onChange={(e) => setDiscount(e.target.value)}/>
+            </FormControl>
+          </SimpleGrid>
 
+          {showMoreChain
+            ? <SimpleGrid columns={2} spacing={3}>
+                <FormControl mb='3'>
+                  <FormLabel htmlFor='price2'>Price (In {tokenName})</FormLabel>
+                  <Input id='price2' onChange={(e) => setPrice2(e.target.value)}/>
+                </FormControl>
+                <FormControl mb='5'>
+                  <FormLabel htmlFor='discount2'>Reward for Referrer (In %)</FormLabel>
+                  <Input id='discount2' onChange={(e) => setDiscount2(e.target.value)}/>
+                </FormControl>
+              </SimpleGrid>
+            : <Button colorScheme='pink' onClick={() => setShowMoreChain(true)} mb="2">
+                Add for {tokenName === 'AVAX' ? 'Moonbeam' : 'Avalanche'}
+              </Button>
+          }
+          <br />
           {loading
             ? <Spinner color='orange' mt='4' />
             : 
               <>
-                <Button colorScheme='orange' onClick={handleSubmit} mb="2">
-                  Create for only this chain
-                </Button>
-                <Button colorScheme='orange' onClick={createCouponToOtherChain} mb="2">
-                  Create for both Moonbeam and Avalanche
-                </Button>
-                <br />
-                <Button onClick={() => router.push('/')}>Cancel</Button>
+                <ButtonGroup spacing='6' mt='4'>
+                  <Button colorScheme='orange' onClick={handleSubmit}>
+                    Create
+                  </Button>
+                  <Button onClick={() => router.push('/')}>Cancel</Button>
+              </ButtonGroup>
               </>
           }
           <br />
