@@ -69,15 +69,15 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
   return (
     <Box bg='#f5eedf' p={2}>
        <Head>
-        <title>Digital Coupon NFT</title>
-        <meta name="description" content="Digital Coupon NFT" />
+        <title>Digital Coupon</title>
+        <meta name="description" content="Digital Coupon" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Container maxW='1200px'>
         <Flex minWidth='max-content' alignItems='center' gap='2'>
           <Box>
             <NextLink href='/' passHref>
-              <Image src="/assets/logo.png" alt="Logo" style={{ width: "200px", cursor: "pointer" }}/>
+              <Image src="/assets/logo.png" alt="Logo" cursor="pointer" mr='3' mt='1' style={{ width: "180px" }}/>
             </NextLink>
           </Box>
           <NextLink href='/' passHref>
