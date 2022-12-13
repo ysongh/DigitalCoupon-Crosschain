@@ -73,7 +73,7 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
         <meta name="description" content="Digital Coupon NFT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Container maxW='1300px'>
+      <Container maxW='1200px'>
         <Flex minWidth='max-content' alignItems='center' gap='2'>
           <Box>
             <NextLink href='/' passHref>

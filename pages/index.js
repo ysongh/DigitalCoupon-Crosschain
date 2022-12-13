@@ -1,88 +1,52 @@
 import React, { useEffect, useState } from 'react';
-import { Container, SimpleGrid, Heading } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
+import { Container, SimpleGrid, Box, Heading, Text, Image, ButtonGroup, Button, Center } from '@chakra-ui/react';
 
-import CouponCard from '../components/CouponCard';
-import ChainCard from '../components/ChainCard';
-import Spinner from '../components/common/Spinner';
+export default function Home() {
+  const router = useRouter();
 
-export default function Home({ tokenName, dcContract }) {
-  const [coupons, setCoupons] = useState([]);
-  const [reciptCounts, setReciptCounts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    //fetchAllNFTs();
-  }, [])
-
-  useEffect(() => {
-    if (dcContract) fetchCoupons();
-  }, [dcContract])
-
-  const fetchCoupons = async () => {
-    try{
-      setLoading(true);
-
-      const _counpons = await dcContract.getCoupons();
-      console.log(_counpons);
-
-      const temp = [];
-      for (let c of _counpons) {
-        const res = await fetch(c.cid + "/couponData.json");
-        const couponData = await res.json();
-        console.log(couponData); 
-        temp.push({...c, couponData});
-      }
-      setCoupons(temp);
-
-      setLoading(false);
-    } catch(error) {
-     console.error(error);
-     setLoading(false);
-    }  
-  }
-
-  const fetchAllNFTs = async () => {
-    try{
-      const chainList = [
-        {
-          id: '1287',
-          address: process.env.NEXT_PUBLIC_MOONBASE_CONTRACTADDRESS,
-          image: "/assets/moonbeamlogo.png"
-        },
-        {
-          id: '80001',
-          address: process.env.NEXT_PUBLIC_MUMBAI_CONTRACTADDRESS,
-          image: "/assets/polygonlogo.png"
-        }
-      ];
-      const temp = [];
-      chainList.map(async c => {
-        const nft = await fetch(`https://api.covalenthq.com/v1/${c.id}/tokens/${c.address}/nft_token_ids/?quote-currency=USD&format=JSON&key=${process.env.NEXT_PUBLIC_COVALENT_APIKEY}`);
-        const { data } = await nft.json();
-        console.log(data);
-        temp.push({ "count": data.items.length, "image": c.image });
-      })
-      setReciptCounts(temp);
-      
-    } catch(error) {
-      console.error(error);
-    }
-  }
-
-  console.log(reciptCounts);
-  
   return (
-    <Container maxW='1100px' mt='3'>
-      <Heading mb='2'>Number of Sales on these Network</Heading>
-      <SimpleGrid bg='#ffe6cc' minChildWidth='200px' columns={[4]} spacing={0} mb='10'>
-        {reciptCounts.map((r, index) => <ChainCard r={r} key={index} />)}
-      </SimpleGrid>
-      <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
-        {loading
-          ? <Spinner />
-          : coupons.map(c => <CouponCard key={c.couponId.toString()} c={c} tokenName={tokenName} />
-        )}
-      </SimpleGrid>
-    </Container>
+    <Box bg="#F4F1ED">
+      <Container maxW='1200px'>
+        <SimpleGrid minChildWidth='300px' columns={2} spacing={10}>
+          <div>
+            <Heading as='h1' size='2xl' mt={14}>
+              Create product offers and incentivize sharing
+            </Heading>
+            <Text fontSize='2xl' mt={3}>
+              Cross-Chain power by Axelar
+            </Text>
+            <ButtonGroup variant='outline' spacing='3' mt={4}>
+              <Button colorScheme='orange' variant='solid' size='lg' onClick={() => router.push("/coupons")}>
+                Get Started
+              </Button>
+            </ButtonGroup>
+          </div>
+         
+          <Image src="./assets/shoppingimage.png" alt="Shopping" mt='10' />
+        </SimpleGrid>
+
+        <SimpleGrid minChildWidth='300px' columns={[3]} spacing={10} mt='20' pb='20'>
+          <Box maxW='sm' bg='white' borderWidth='1px' borderRadius='lg' overflow='hidden' py='5'>
+            <center>
+              <Image src="./assets/shoppingicon1.png" alt="Shopping Icon 1" style={{ width: "100px", height: '100px' }}/>
+              <Text fontSize='xl' mt={2}>Offers Low-cost, easy-to-use platform</Text>
+            </center>
+          </Box>
+          <Box maxW='sm' bg='white' borderWidth='1px' borderRadius='lg' overflow='hidden' py='5'>
+            <center>
+              <Image src="./assets/shoppingicon2.png" alt="Shopping Icon 2" style={{ width: "120px", height: '100px' }}/>
+              <Text fontSize='xl' mt={2}>Incentivize sharing though affiliate</Text>
+            </center>
+          </Box>
+          <Box maxW='sm' bg='white' borderWidth='1px' borderRadius='lg' overflow='hidden' py='5'>
+            <center>
+              <Image src="./assets/shoppingicon3.png" alt="Shopping Icon 3" style={{ width: "120px", height: '100px' }}/>
+              <Text fontSize='xl' mt={2}>Cross Chain</Text>
+            </center>
+          </Box>
+        </SimpleGrid>
+      </Container>
+    </Box>
   )
 }
