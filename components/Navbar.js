@@ -40,6 +40,14 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
       setChainName("Mumbai");
       setTokenName("MATIC");
     }
+    else if(chainId === 43113){
+      const avalancheChain = chains.find((chain) => chain.name === 'Avalanche');
+      const contract = new ethers.Contract(avalancheChain.digitalCoupon, DigitalCoupon.abi, signer);
+      console.log(contract)
+      setDCContract(contract);
+      setChainName("Avalanche");
+      setTokenName("AVAX");
+    }
     else if(chainId === 1287){
       const moonbeamChain = chains.find((chain) => chain.name === 'Moonbeam');
       const contract = new ethers.Contract(moonbeamChain.digitalCoupon, DigitalCoupon.abi, signer);
@@ -83,6 +91,9 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
           <NextLink href='/' passHref>
             <Link>Home</Link>
           </NextLink>
+          {ethAddress && <NextLink href='/coupons' passHref>
+            <Link>Coupons List</Link>
+          </NextLink>}
           {ethAddress && <NextLink href='/my-coupons' passHref>
             <Link>My Coupons</Link>
           </NextLink>}

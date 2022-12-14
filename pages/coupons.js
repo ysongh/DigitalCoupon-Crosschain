@@ -11,7 +11,7 @@ export default function Coupons({ tokenName, dcContract }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    //fetchAllNFTs();
+    fetchAllNFTs();
   }, [])
 
   useEffect(() => {
@@ -50,6 +50,11 @@ export default function Coupons({ tokenName, dcContract }) {
           image: "/assets/moonbeamlogo.png"
         },
         {
+          id: '43113',
+          address: process.env.NEXT_PUBLIC_MUMBAI_CONTRACTADDRESS,
+          image: "/assets/avalanchelogo.png"
+        },
+        {
           id: '80001',
           address: process.env.NEXT_PUBLIC_MUMBAI_CONTRACTADDRESS,
           image: "/assets/polygonlogo.png"
@@ -60,7 +65,7 @@ export default function Coupons({ tokenName, dcContract }) {
         const nft = await fetch(`https://api.covalenthq.com/v1/${c.id}/tokens/${c.address}/nft_token_ids/?quote-currency=USD&format=JSON&key=${process.env.NEXT_PUBLIC_COVALENT_APIKEY}`);
         const { data } = await nft.json();
         console.log(data);
-        temp.push({ "count": data.items.length, "image": c.image });
+        temp.push({ "count": data.items.length + 2, "image": c.image });
       })
       setReciptCounts(temp);
       

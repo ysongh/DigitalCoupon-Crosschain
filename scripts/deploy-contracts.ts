@@ -41,12 +41,12 @@ async function deployNFTContracts(chain: any) {
     console.log(`DigitalCoupon deployed on ${chain.name}: ${digitalCoupon.address}`);
     chain.digitalCoupon = digitalCoupon.address;
 
-    if (chain.name === "Avalanche") {
-        await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeihcfd2bojowzxy6frpl54xqyt6cpk2wlp52avpetgj7yrcgx3m7ky", "7", "1000000000000000000", "10");
-        console.log(`Coupon #1 is created on Avalanche`);
-        await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeigqj4in4bpiovytwo6ubsjc2myek6psciscszyozch3jlzs2hv3ra", "10", "1500000000000000000", "10");
-        console.log(`Coupon #2 is created on Avalanche`);
-    }
+    // if (chain.name === "Avalanche") {
+    //     await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeihcfd2bojowzxy6frpl54xqyt6cpk2wlp52avpetgj7yrcgx3m7ky", "7", "1000000000000000000", "10");
+    //     console.log(`Coupon #1 is created on Avalanche`);
+    //     await digitalCoupon.createCoupon("https://dweb.link/ipfs/bafybeigqj4in4bpiovytwo6ubsjc2myek6psciscszyozch3jlzs2hv3ra", "10", "1500000000000000000", "10");
+    //     console.log(`Coupon #2 is created on Avalanche`);
+    // }
 
 }
 
