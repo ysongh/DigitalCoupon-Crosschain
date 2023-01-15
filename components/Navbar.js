@@ -28,12 +28,6 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
     const { chainId } = await provider.getNetwork();
     console.log(chainId)
 
-    const address = await signer.getAddress();
-    setETHAddress(address);
-
-    const _balance = await provider.getBalance(address);
-    setBalance(_balance.toString());
-
     if(chainId === 80001){
       const contract = new ethers.Contract(process.env.NEXT_PUBLIC_MUMBAI_CONTRACTADDRESS, DigitalCoupon.abi, signer);
       setDCContract(contract);
@@ -72,6 +66,16 @@ function Navbar({ ethAddress, tokenName, setETHAddress, setUserSigner, setDCCont
       setChainName("Local Moonbase");
       setTokenName("DEV");
     }
+    else {
+      alert("Network not supported. Please try Goerli or Mumbai");
+      return;
+    }
+
+    const address = await signer.getAddress();
+    setETHAddress(address);
+
+    const _balance = await provider.getBalance(address);
+    setBalance(_balance.toString());
   }
 
   return (
