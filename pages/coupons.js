@@ -82,12 +82,13 @@ export default function Coupons({ tokenName, dcContract }) {
       <SimpleGrid bg='#ffe6cc' minChildWidth='200px' columns={[4]} spacing={0} mb='10'>
         {reciptCounts.map((r, index) => <ChainCard r={r} key={index} />)}
       </SimpleGrid>
-      <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
-        {loading
-          ? <Spinner />
-          : coupons.map(c => <CouponCard key={c.couponId.toString()} c={c} tokenName={tokenName} />
-        )}
-      </SimpleGrid>
+      {loading
+        ? <Spinner />
+        : <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
+            {coupons.map(c => <CouponCard key={c.couponId.toString()} c={c} tokenName={tokenName} />
+          )}
+        </SimpleGrid>
+      }
     </Container>
   )
 }

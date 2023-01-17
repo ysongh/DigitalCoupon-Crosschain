@@ -37,16 +37,17 @@ export default function MyCoupons({ ethAddress, tokenName, dcContract }) {
   
   return (
     <Container maxW='1100px' mt='3'>
-      <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
       {loading
         ? <Spinner />
-        : coupons.length
-          ? coupons.map(c => <CouponCard key={c.couponId.toString()} c={c} tokenName={tokenName} />)
-          : <Heading mt='5' textAlign='center'>
-              You do not create any coupon
-            </Heading>
-        }
-      </SimpleGrid>
+        : <SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(300px, 1fr))'>
+            {coupons.length
+              ? coupons.map(c => <CouponCard key={c.couponId.toString()} c={c} tokenName={tokenName} />)
+              : <Heading mt='5' textAlign='center'>
+                  You do not create any coupon
+                </Heading>
+            }
+          </SimpleGrid>
+      }
     </Container>
   )
 }
