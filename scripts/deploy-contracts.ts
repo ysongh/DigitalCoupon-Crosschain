@@ -10,7 +10,6 @@ const { deployUpgradable } = require('@axelar-network/axelar-gmp-sdk-solidity');
 // load contracts
 const ExampleProxy = require('../artifacts/contracts/Proxy.sol/ExampleProxy.json');
 const DigitalCoupon = require('../artifacts/contracts/DigitalCoupon.sol/DigitalCoupon.json');
-const ERC721 = require('../artifacts/contracts/ERC721demo.sol/ERC721Demo.json');
 
 let chains = isTestnet ? require('../config/testnet.json') : require('../config/local.json');
 
